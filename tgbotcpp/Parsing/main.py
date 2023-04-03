@@ -8,6 +8,9 @@ else:
     flag = False
 city_id = 0
 key = "1d846a80425c1dd58e8efcc238341ff5"
+filt = "!@#$%^&*()/?|\\:;<>"
+for i in range(len(filt)):
+    s_city = s_city.replace(filt[i], "")
 
 
 try:

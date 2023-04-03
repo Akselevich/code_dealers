@@ -132,6 +132,14 @@ int main(int argc, char* argv[])
                     string weather_f = weather_sync_gps(loc_locale, message->location->latitude, message->location->longitude, path);
                     bot.getApi().sendMessage(message->chat->id, weather_f);
                     flag = false;
+                    return;
+                }
+                // If message type is voice
+                if (message->voice)
+                {
+                    cout << "Voice message" << endl;
+                    bot.getApi().sendMessage(message->chat->id, "Sorry, we aren't support voice messages yet!");
+                    return;
                 }
                 // If message type is text
                 else
@@ -140,6 +148,7 @@ int main(int argc, char* argv[])
                     string weather_f = weather_sync(loc_locale, message->text.c_str(), path);
                     bot.getApi().sendMessage(message->chat->id, weather_f);
                     flag = false;
+                    return;
                 }
             }
         });
