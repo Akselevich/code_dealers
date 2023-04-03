@@ -6,7 +6,7 @@ using namespace std;
 using namespace config;
 
 // Checking if loc.txt exists and creating if not 
-if_loctxt_exists(string path, string loc_locale) 
+bool if_loctxt_exists(string path, string loc_locale) 
 {
     fstream file(loc_locale);
     if (!file)
@@ -28,7 +28,8 @@ string weather_sync_gps(string loc, float latitude, float longitude, string path
     loc_localew.close();
     string ss = "cd ";
     ss.append(path).append("/Parsing/venv/Scripts/&python.exe ").append(path).append("/Parsing/main.py");
-    system(ss);
+    const char* ss2 = ss.c_str();
+    system(ss2);
     
     ifstream outputw(loc);
     string weather_f, line;
@@ -52,7 +53,8 @@ string weather_sync(string loc, string message, string path)
     loc_localew.close();
     string ss = "cd ";
     ss.append(path).append("/Parsing/venv/Scripts/&python.exe ").append(path).append("/Parsing/main.py");
-    system(ss);
+    const char* ss2 = ss.c_str();
+    system(ss2);
 
     ifstream outputw(loc);
     string weather_f, line;
@@ -93,7 +95,7 @@ int main(int argc, char* argv[])
         bot.getEvents().onCommand(
             "start", [&bot, &help](TgBot::Message::Ptr message)
             {
-                bot.getApi().sendMessage(message->chat->id, help_locale);
+                bot.getApi().sendMessage(message->chat->id, help);
 
                 return;
             });
@@ -101,7 +103,7 @@ int main(int argc, char* argv[])
         bot.getEvents().onCommand(
             "help", [&bot, &help](TgBot::Message::Ptr message)
             {
-                bot.getApi().sendMessage(message->chat->id, help_locale);
+                bot.getApi().sendMessage(message->chat->id, help);
 
                 return;
             });
