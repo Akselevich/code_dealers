@@ -28,8 +28,7 @@ string weather_sync_gps(string loc, float latitude, float longitude, string path
     loc_localew.close();
     string ss = "cd ";
     ss.append(path).append("/Parsing/venv/Scripts/&python.exe ").append(path).append("/Parsing/main.py");
-    const char* ss2 = ss.c_str();
-    system(ss2);
+    system(ss.c_str());
     
     ifstream outputw(loc);
     string weather_f, line;
@@ -53,8 +52,7 @@ string weather_sync(string loc, string message, string path)
     loc_localew.close();
     string ss = "cd ";
     ss.append(path).append("/Parsing/venv/Scripts/&python.exe ").append(path).append("/Parsing/main.py");
-    const char* ss2 = ss.c_str();
-    system(ss2);
+    system(ss.c_str());
 
     ifstream outputw(loc);
     string weather_f, line;
