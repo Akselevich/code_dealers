@@ -5,16 +5,31 @@
 using namespace std;
 using namespace config;
 
+// Checking if loc.txt exists and creating if not 
+if_loctxt_exists(string path, string loc_locale) 
+{
+    fstream file(loc_locale);
+    if (!file)
+    {
+        ofstream loc(path.append("loc.txt"));
+        loc.close();
+        return false;
+    }
+    else
+        return true;
+}
+ 
 // Weather sync with GPS
-string weather_sync_gps(string loc, float latitude, float longitude)
+string weather_sync_gps(string loc, float latitude, float longitude, string path)
 {
     ofstream loc_localew(loc, ios::out | ios::trunc);
-    std::cout << "latitude: " << latitude << "\nlongitude: " << longitude << endl;
-    string cords = "latitude: ";
+    cout << "latitude: " << latitude << "\nlongitude: " << longitude << endl;
     loc_localew << "!" << latitude << endl << longitude << endl;
     loc_localew.close();
-    system("cd C:/Users/andre/code_dealers/tgbotcpp/Parsing/venv/Scripts/&python.exe C:/Users/andre/code_dealers/tgbotcpp/Parsing/main.py");
-
+    string ss = "cd ";
+    ss.append(path).append("/Parsing/venv/Scripts/&python.exe ").append(path).append("/Parsing/main.py");
+    system(ss);
+    
     ifstream outputw(loc);
     string weather_f, line;
     while (getline(outputw, line))
@@ -23,19 +38,21 @@ string weather_sync_gps(string loc, float latitude, float longitude)
         weather_f.append("\n"); 
     }
     outputw.close();
-    std::cout << weather_f << endl;
+    cout << weather_f << endl;
 
     return weather_f;
 }
 
 // Weather sync without GPS
-string weather_sync(string loc, string message)
+string weather_sync(string loc, string message, string path)
 {
     ofstream loc_localew(loc, ios::out | ios::trunc);
-    std::cout << "location: " << message << endl;
+    cout << message << endl;
     loc_localew << message << endl;
     loc_localew.close();
-    system("cd C:/Users/andre/code_dealers/tgbotcpp/Parsing/venv/Scripts/&python.exe C:/Users/andre/code_dealers/tgbotcpp/Parsing/main.py");
+    string ss = "cd ";
+    ss.append(path).append("/Parsing/venv/Scripts/&python.exe ").append(path).append("/Parsing/main.py");
+    system(ss);
 
     ifstream outputw(loc);
     string weather_f, line;
@@ -45,7 +62,7 @@ string weather_sync(string loc, string message)
         weather_f.append("\n");
     }
     outputw.close();
-    std::cout << weather_f << endl;
+    cout << weather_f << endl;
 
     return weather_f;
 }
@@ -62,18 +79,19 @@ int main(int argc, char* argv[])
 
     try
     {
+        string path = argv[1];
+        path.erase(path.find_last_of('\\')+1);
         const auto token = get_token(argv[1]);
-        const auto input_locale = get_input_locale(argv[1]);
-        const auto output_locale = get_output_locale(argv[1]);
-        const auto help_locale = get_help_locale(argv[1]);
+        const auto help = get_help(argv[1]);
         const auto loc_locale = get_loc_locale(argv[1]);
+        if_loctxt_exists(path, loc_locale);
         bool flag = false;
         auto bot = TgBot::Bot(token);
          
 
         // Declaring commands 
         bot.getEvents().onCommand(
-            "start", [&bot, &help_locale](TgBot::Message::Ptr message)
+            "start", [&bot, &help](TgBot::Message::Ptr message)
             {
                 bot.getApi().sendMessage(message->chat->id, help_locale);
 
@@ -81,7 +99,7 @@ int main(int argc, char* argv[])
             });
 
         bot.getEvents().onCommand(
-            "help", [&bot, &help_locale](TgBot::Message::Ptr message)
+            "help", [&bot, &help](TgBot::Message::Ptr message)
             {
                 bot.getApi().sendMessage(message->chat->id, help_locale);
 
@@ -99,7 +117,7 @@ int main(int argc, char* argv[])
             });
 
         // Messages checking 
-        bot.getEvents().onAnyMessage([&bot,&flag,&input_locale, &output_locale, &loc_locale](TgBot::Message::Ptr message)
+        bot.getEvents().onAnyMessage([&bot,&flag,&loc_locale,&path](TgBot::Message::Ptr message)
             {
             // If last message was a location and previous was a /weather command
             if (message->text != "/weather" && message->text != "/help" && message->text != "/start" && flag == true)
@@ -108,16 +126,16 @@ int main(int argc, char* argv[])
                 // If message type is location
                 if (message->location)
                 {
-                    std::cout << ">> " << message->text.c_str() << endl;
-                    string weather_f = weather_sync_gps(loc_locale, message->location->latitude, message->location->longitude);
+                    cout << ">> " << message->text.c_str() << endl;
+                    string weather_f = weather_sync_gps(loc_locale, message->location->latitude, message->location->longitude, path);
                     bot.getApi().sendMessage(message->chat->id, weather_f);
                     flag = false;
                 }
                 // If message type is text
                 else
                 {
-                    std::cout << "Location input " << endl;
-                    string weather_f = weather_sync(loc_locale, message->text.c_str());
+                    cout << "Location input: " << endl;
+                    string weather_f = weather_sync(loc_locale, message->text.c_str(), path);
                     bot.getApi().sendMessage(message->chat->id, weather_f);
                     flag = false;
                 }
@@ -127,7 +145,7 @@ int main(int argc, char* argv[])
 
         // Long poll
         TgBot::TgLongPoll longPoll(bot);
-        std::cout << "Long poll..." << endl;
+        cout << "Long poll..." << endl;
         while (true)
         {  
             longPoll.start();
