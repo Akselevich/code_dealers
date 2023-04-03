@@ -1,7 +1,8 @@
 {
   "token": "5851994307:AAG3kJSDiqbXWdOX1XzD63D17n3l2Aziyos",
-  "help": "C:/Users/andre/code_dealers/tgbotcpp/help.txt",
+  "help": "Hello! Here is a list of availible commands:\n/help - shows this list\n/weather - real-time weather display",
   "input": "C:/Users/andre/code_dealers/tgbotcpp/input.txt",
   "output": "C:/Users/andre/code_dealers/tgbotcpp/output.txt",
   "loc": "C:/Users/andre/code_dealers/tgbotcpp/loc.txt"
+
 }

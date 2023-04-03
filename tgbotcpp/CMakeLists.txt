@@ -18,5 +18,5 @@ FetchContent_MakeAvailable(tgbot-cpp)
 
 find_package(Boost)
 
-add_executable(telegram main.cpp config.cpp "libaries.h" "file_check.cpp")
+add_executable(telegram main.cpp config.cpp "libaries.h"   "weather.cpp")
 target_link_libraries(telegram TgBot Boost::boost)

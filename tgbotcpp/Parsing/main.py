@@ -1,11 +1,11 @@
 import requests
 with open('C:/Users/andre/code_dealers/tgbotcpp/loc.txt') as f:
     s_city = f.read()
+if s_city[0] == "!":
+    s_city = s_city.replace("!", "")
     flag = True
-    if s_city == "!!!":
-        with open('C:/Users/andre/code_dealers/tgbotcpp/input.txt') as w:
-            s_city = w.read()
-        flag = False
+else:
+    flag = False
 city_id = 0
 key = "1d846a80425c1dd58e8efcc238341ff5"
 
@@ -31,7 +31,7 @@ try:
 
 except Exception as e:
     print("Exception (find):", e)
-    with open('C:/Users/andre/code_dealers/tgbotcpp/output.txt', 'w', encoding='utf-8') as f:
+    with open('C:/Users/andre/code_dealers/tgbotcpp/loc.txt', 'w', encoding='utf-8') as f:
         print("The region was not found!\n")
         f.write("The region was not found!\n")
     exit(1)
@@ -45,10 +45,10 @@ try:
     output = "Now in this place " + str(data['weather'][0]['description']) + ".\nTemperature: " + \
              str(round(data['main']['temp'])) + " °C\n"
 
-    with open('C:/Users/andre/code_dealers/tgbotcpp/output.txt', 'w', encoding='utf-8') as f:
+    with open('C:/Users/andre/code_dealers/tgbotcpp/loc.txt', 'w', encoding='utf-8') as f:
         f.write(output)
-    print("Now in this place: ", data['weather'][0]['description'], ".")
-    print("Temperature:", data['main']['temp'], "°C")
+    # print("Now in this place: ", data['weather'][0]['description'], ".")
+    # print("Temperature:", data['main']['temp'], "°C")
 
 
 except Exception as e:

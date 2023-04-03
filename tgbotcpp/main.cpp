@@ -1,11 +1,54 @@
 ﻿#include "libaries.h"
 #include "config.h"
-#include "file_check.h"
 
 
 using namespace std;
-using namespace StringTools;
 using namespace config;
+
+// Weather sync with GPS
+string weather_sync_gps(string loc, float latitude, float longitude)
+{
+    ofstream loc_localew(loc, ios::out | ios::trunc);
+    std::cout << "latitude: " << latitude << "\nlongitude: " << longitude << endl;
+    string cords = "latitude: ";
+    loc_localew << "!" << latitude << endl << longitude << endl;
+    loc_localew.close();
+    system("cd C:/Users/andre/code_dealers/tgbotcpp/Parsing/venv/Scripts/&python.exe C:/Users/andre/code_dealers/tgbotcpp/Parsing/main.py");
+
+    ifstream outputw(loc);
+    string weather_f, line;
+    while (getline(outputw, line))
+    {
+        weather_f.append(line);
+        weather_f.append("\n"); 
+    }
+    outputw.close();
+    std::cout << weather_f << endl;
+
+    return weather_f;
+}
+
+// Weather sync without GPS
+string weather_sync(string loc, string message)
+{
+    ofstream loc_localew(loc, ios::out | ios::trunc);
+    std::cout << "location: " << message << endl;
+    loc_localew << message << endl;
+    loc_localew.close();
+    system("cd C:/Users/andre/code_dealers/tgbotcpp/Parsing/venv/Scripts/&python.exe C:/Users/andre/code_dealers/tgbotcpp/Parsing/main.py");
+
+    ifstream outputw(loc);
+    string weather_f, line;
+    while (getline(outputw, line))
+    {
+        weather_f.append(line);
+        weather_f.append("\n");
+    }
+    outputw.close();
+    std::cout << weather_f << endl;
+
+    return weather_f;
+}
 
 
 int main(int argc, char* argv[])
@@ -14,12 +57,6 @@ int main(int argc, char* argv[])
     if (argc < 2)
     {
         cerr << "Error! Config.json doesn't exist!" << endl;
-        exit(1);
-    }
-    // Files checking
-    if (checking(argv[1]) != "Success!\n")
-    {
-        std::cout << "Error! Check failed! " << checking(argv[1]);;
         exit(1);
     }
 
@@ -38,14 +75,15 @@ int main(int argc, char* argv[])
         bot.getEvents().onCommand(
             "start", [&bot, &help_locale](TgBot::Message::Ptr message)
             {
-                fstream helpw(help_locale);
-                string current_raw, help_res;
-                help_res = "Hello! Here is a list of availible commands:\n";
-                while (getline(helpw, current_raw)) {
-                    help_res.append(current_raw).append("\n");
-                }
-                bot.getApi().sendMessage(message->chat->id, help_res);
-                helpw.close();
+                bot.getApi().sendMessage(message->chat->id, help_locale);
+
+                return;
+            });
+
+        bot.getEvents().onCommand(
+            "help", [&bot, &help_locale](TgBot::Message::Ptr message)
+            {
+                bot.getApi().sendMessage(message->chat->id, help_locale);
 
                 return;
             });
@@ -53,81 +91,33 @@ int main(int argc, char* argv[])
         bot.getEvents().onCommand(
             "weather", [&bot,&flag](TgBot::Message::Ptr message)
             {
-              bot.getApi().sendMessage(message->chat->id, "Enter your location");
-              flag = true;
-              
-              return;
-                      
-            });
-
-        bot.getEvents().onCommand(
-            "help", [&bot,&help_locale](TgBot::Message::Ptr message)
-            {
-                fstream helpw(help_locale);
-                string current_raw, help_res;
-                help_res = "Here is a list of availible commands:\n";
-                while (getline(helpw, current_raw)) {
-                    help_res.append(current_raw).append("\n");
-                }
-                bot.getApi().sendMessage(message->chat->id, help_res);
-                helpw.close();
-
+                bot.getApi().sendMessage(message->chat->id, "Enter your location");
+                flag = true;
+                
                 return;
+                      
             });
 
         // Messages checking 
         bot.getEvents().onAnyMessage([&bot,&flag,&input_locale, &output_locale, &loc_locale](TgBot::Message::Ptr message)
             {
-                std::cout << ">> " << message->text.c_str() << endl;
-            // if last message was a location and previous was a /weather command
+            // If last message was a location and previous was a /weather command
             if (message->text != "/weather" && message->text != "/help" && message->text != "/start" && flag == true)
             {
-                // if message type is location
+                
+                // If message type is location
                 if (message->location)
                 {
-                    auto latitude = message->location->latitude;
-                    auto longitude = message->location->longitude;
-                    ofstream inputw(input_locale, ios::out | ios::trunc);
-                    ofstream loc_localew(loc_locale, ios::out | ios::trunc);
-                    std::cout << "latitude: " << latitude << "\nlongitude: " << longitude << endl;
-                    string cords = "latitude: ";
-                    loc_localew << latitude << endl << longitude << endl;
-                    loc_localew.close();
-                    inputw << "!!!";
-                    inputw.close();
-                    system("cd C:/Users/andre/code_dealers/tgbotcpp/Parsing/venv/Scripts/&python.exe C:/Users/andre/code_dealers/tgbotcpp/Parsing/main.py");
-                    ifstream outputw(output_locale);
-                    string weather_f, line;
-                    while (getline(outputw, line))
-                    {
-                        weather_f.append(line);
-                        weather_f.append("\n");
-                    }
-                    outputw.close();
-                    std::cout << weather_f << endl;
+                    std::cout << ">> " << message->text.c_str() << endl;
+                    string weather_f = weather_sync_gps(loc_locale, message->location->latitude, message->location->longitude);
                     bot.getApi().sendMessage(message->chat->id, weather_f);
                     flag = false;
                 }
-                // if message type is text
+                // If message type is text
                 else
                 {
-                    ofstream inputw(input_locale, ios::out | ios::trunc);
-                    ofstream loc_localew(loc_locale, ios::out | ios::trunc);
-                    std::cout << message->text.c_str() << endl;
-                    inputw << message->text.c_str();
-                    inputw.close();
-                    loc_localew << "!!!";
-                    loc_localew.close();
-                    system("cd C:/Users/andre/code_dealers/tgbotcpp/Parsing/venv/Scripts/&python.exe C:/Users/andre/code_dealers/tgbotcpp/Parsing/main.py");
-                    ifstream outputw(output_locale);
-                    string weather_f, line;
-                    while (getline(outputw, line))
-                    {
-                        weather_f.append(line);
-                        weather_f.append("\n");
-                    }
-                    outputw.close();
-                    std::cout << weather_f << endl;
+                    std::cout << "Location input " << endl;
+                    string weather_f = weather_sync(loc_locale, message->text.c_str());
                     bot.getApi().sendMessage(message->chat->id, weather_f);
                     flag = false;
                 }

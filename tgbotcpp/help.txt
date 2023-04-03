@@ -1,2 +1,0 @@
-	/help - shows this list
-	/weather - real-time weather display
