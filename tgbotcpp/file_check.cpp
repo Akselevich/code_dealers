@@ -30,5 +30,12 @@ string checking(const char* config)
     }
     inFile.close();
 
+    inFile.open(get_loc_locale(config));
+    if (!inFile)
+    {
+        return "Unable to open locale file!\n";
+    }
+    inFile.close();
+
     return "Success!\n";
 }

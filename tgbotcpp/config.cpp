@@ -33,4 +33,11 @@ namespace config
         std::string token = root.get<std::string>("output");
         return token;
     }
+    std::string get_loc_locale(std::string filename)
+    {
+        pt::ptree root;
+        pt::read_json(filename, root);
+        std::string token = root.get<std::string>("loc");
+        return token;
+    }
 }
