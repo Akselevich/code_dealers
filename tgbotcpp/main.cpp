@@ -6,13 +6,16 @@ using namespace std;
 using namespace config;
 
 // Checking if loc.txt exists and creating if not 
-bool if_loctxt_exists(string path, string loc_locale) 
+bool if_loctxt_exists(string jsonloc, string loc_locale) 
 {
+    string path = jsonloc;
+    path.erase(path.find_last_of('\\') + 1);
     fstream file(loc_locale);
     if (!file)
     {
         ofstream loc(path.append("loc.txt"));
         loc.close();
+        update_loc_locale(jsonloc, path);
         return false;
     }
     else
@@ -27,7 +30,7 @@ string weather_sync_gps(string loc, float latitude, float longitude, string path
     loc_localew << "!" << latitude << endl << longitude << endl;
     loc_localew.close();
     string ss = "cd ";
-    ss.append(path).append("/Parsing/venv/Scripts/&python.exe ").append(path).append("/Parsing/main.py");
+    ss.append(path).append("Parsing\\venv\\Scripts\\&python.exe ").append(path).append("Parsing\\main.py");
     system(ss.c_str());
     
     ifstream outputw(loc);
@@ -51,7 +54,7 @@ string weather_sync(string loc, string message, string path)
     loc_localew << message << endl;
     loc_localew.close();
     string ss = "cd ";
-    ss.append(path).append("/Parsing/venv/Scripts/&python.exe ").append(path).append("/Parsing/main.py");
+    ss.append(path).append("Parsing\\venv\\Scripts\\&python.exe ").append(path).append("Parsing\\main.py");
     system(ss.c_str());
 
     ifstream outputw(loc);
@@ -79,14 +82,16 @@ int main(int argc, char* argv[])
 
     try
     {
-        string path = argv[1];
-        path.erase(path.find_last_of('\\')+1);
+        
         const auto token = get_token(argv[1]);
         const auto help = get_help(argv[1]);
+        const auto loc = get_loc_locale(argv[1]);
+        if_loctxt_exists(argv[1], loc);
         const auto loc_locale = get_loc_locale(argv[1]);
-        if_loctxt_exists(path, loc_locale);
         bool flag = false;
         auto bot = TgBot::Bot(token);
+        string path = argv[1];
+        path.erase(path.find_last_of('\\') + 1);
     
 
         // Declaring commands 
