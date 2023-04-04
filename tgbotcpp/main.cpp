@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
         if_loctxt_exists(path, loc_locale);
         bool flag = false;
         auto bot = TgBot::Bot(token);
-         
+    
 
         // Declaring commands 
         bot.getEvents().onCommand(
@@ -119,10 +119,11 @@ int main(int argc, char* argv[])
         // Messages checking 
         bot.getEvents().onAnyMessage([&bot,&flag,&loc_locale,&path](TgBot::Message::Ptr message)
             {
+
             // If last message was a location and previous was a /weather command
             if (message->text != "/weather" && message->text != "/help" && message->text != "/start" && flag == true)
             {
-                
+
                 // If message type is location
                 if (message->location)
                 {
@@ -132,6 +133,7 @@ int main(int argc, char* argv[])
                     flag = false;
                     return;
                 }
+
                 // If message type is voice
                 if (message->voice)
                 {
@@ -139,6 +141,7 @@ int main(int argc, char* argv[])
                     bot.getApi().sendMessage(message->chat->id, "Sorry, we aren't support voice messages yet!");
                     return;
                 }
+
                 // If message type is text
                 else
                 {
@@ -150,10 +153,10 @@ int main(int argc, char* argv[])
                 }
             }
         });
-        
 
         // Long poll
         TgBot::TgLongPoll longPoll(bot);
+        cout << "Bot username: " << bot.getApi().getMe()->username.c_str() << endl;
         cout << "Long poll..." << endl;
         while (true)
         {  
