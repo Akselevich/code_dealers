@@ -8,8 +8,14 @@ using namespace config;
 // Creating basic keyboard layout
 void createBasicKeyboard(TgBot::ReplyKeyboardMarkup::Ptr& kb)
 {
+    kb->resizeKeyboard = true;
+    kb->oneTimeKeyboard = true;
     TgBot::KeyboardButton::Ptr button(new TgBot::KeyboardButton);
     button->text = "Find out the weather";
+    button->requestContact = false;
+    button->requestPoll = false;
+    button->requestChat = false;
+    button->requestUser = false;
     button->requestLocation = true;
     vector<TgBot::KeyboardButton::Ptr> row;
     row.push_back(button);
@@ -111,30 +117,32 @@ int main(int argc, char* argv[])
         auto bot = TgBot::Bot(token);
         string path = argv[1];
         path.erase(path.find_last_of('\\') + 1);
+
+        // Reply Keyboard Initialization 
         TgBot::ReplyKeyboardMarkup::Ptr kb(new TgBot::ReplyKeyboardMarkup);
         createBasicKeyboard(kb);
 
         // Declaring commands 
         bot.getEvents().onCommand(
-            "start", [&bot, &help, &kb](TgBot::Message::Ptr message)
+            "start", [&bot, &help](TgBot::Message::Ptr message)
             {
                 std::cout << "<< " << help << endl;
-                bot.getApi().sendMessage(message->chat->id, help, false, 0, kb);
+                bot.getApi().sendMessage(message->chat->id, help);
 
                 return;
             });
 
         bot.getEvents().onCommand(
-            "help", [&bot, &help, &kb](TgBot::Message::Ptr message)
+            "help", [&bot, &help](TgBot::Message::Ptr message)
             {
                 std::cout << "<< " << help << endl;
-                bot.getApi().sendMessage(message->chat->id, help, false, 0, kb);
+                bot.getApi().sendMessage(message->chat->id, help);
 
                 return;
             });
 
         bot.getEvents().onCommand(
-            "weather", [&bot,&flag, &kb](TgBot::Message::Ptr message)
+            "weather", [&bot,&flag,&kb](TgBot::Message::Ptr message)
             {
                 std::cout << "<< Enter your location" << endl;
                 bot.getApi().sendMessage(message->chat->id, "Enter your location", false, 0, kb);
@@ -145,7 +153,7 @@ int main(int argc, char* argv[])
             });
 
         // Messages checking 
-        bot.getEvents().onAnyMessage([&bot,&flag,&temp,&path,&key,&kb](TgBot::Message::Ptr message)
+        bot.getEvents().onAnyMessage([&bot,&flag,&temp,&path,&key](TgBot::Message::Ptr message)
             {
             
             // If message is a location
