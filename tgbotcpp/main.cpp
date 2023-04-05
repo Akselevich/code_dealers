@@ -26,11 +26,11 @@ bool if_loctxt_exists(string jsonloc, string loc_locale)
 string weather_sync_gps(string loc, float latitude, float longitude, string path)
 {
     ofstream loc_localew(loc, ios::out | ios::trunc);
-    cout << "latitude: " << latitude << "\nlongitude: " << longitude << endl;
+    cout << "latitude: " << latitude << " longitude: " << longitude << endl;
     loc_localew << "!" << latitude << endl << longitude << endl;
     loc_localew.close();
     string ss = "cd ";
-    ss.append(path).append("Parsing\\venv\\Scripts\\&python.exe ").append(path).append("Parsing\\main.py");
+    ss.append(path).append("Parsing\\venv\\Scripts\\&python.exe ").append(path).append("Parsing\\main.py ").append(loc.c_str());
     system(ss.c_str());
     
     ifstream outputw(loc);
@@ -54,7 +54,7 @@ string weather_sync(string loc, string message, string path)
     loc_localew << message << endl;
     loc_localew.close();
     string ss = "cd ";
-    ss.append(path).append("Parsing\\venv\\Scripts\\&python.exe ").append(path).append("Parsing\\main.py");
+    ss.append(path).append("Parsing\\venv\\Scripts\\&python.exe ").append(path).append("Parsing\\main.py ").append(loc.c_str());
     system(ss.c_str());
 
     ifstream outputw(loc);
@@ -125,36 +125,49 @@ int main(int argc, char* argv[])
         bot.getEvents().onAnyMessage([&bot,&flag,&loc_locale,&path](TgBot::Message::Ptr message)
             {
 
-            // If last message was a location and previous was a /weather command
-            if (message->text != "/weather" && message->text != "/help" && message->text != "/start" && flag == true)
+            // If message is a location
+            if (message->location)
+            {
+                cout << ">> " << message->text.c_str() << endl;
+                string weather_f = weather_sync_gps(loc_locale, message->location->latitude, message->location->longitude, path);
+                bot.getApi().sendMessage(message->chat->id, weather_f);
+                flag = false;
+                return;
+            }
+            else
             {
 
-                // If message type is location
-                if (message->location)
+                // If last message was a location and previous was a /weather command
+                if (message->text != "/weather" && message->text != "/help" && message->text != "/start" && flag == true)
                 {
-                    cout << ">> " << message->text.c_str() << endl;
-                    string weather_f = weather_sync_gps(loc_locale, message->location->latitude, message->location->longitude, path);
-                    bot.getApi().sendMessage(message->chat->id, weather_f);
-                    flag = false;
-                    return;
-                }
 
-                // If message type is voice
-                if (message->voice)
-                {
-                    cout << "Voice message" << endl;
-                    bot.getApi().sendMessage(message->chat->id, "Sorry, we aren't support voice messages yet!");
-                    return;
-                }
+                    // If message type is location
+                    if (message->location)
+                    {
+                        cout << ">> " << message->text.c_str() << endl;
+                        string weather_f = weather_sync_gps(loc_locale, message->location->latitude, message->location->longitude, path);
+                        bot.getApi().sendMessage(message->chat->id, weather_f);
+                        flag = false;
+                        return;
+                    }
 
-                // If message type is text
-                else
-                {
-                    cout << "Location input: " << endl;
-                    string weather_f = weather_sync(loc_locale, message->text.c_str(), path);
-                    bot.getApi().sendMessage(message->chat->id, weather_f);
-                    flag = false;
-                    return;
+                    // If message type is voice
+                    if (message->voice)
+                    {
+                        cout << "Voice message" << endl;
+                        bot.getApi().sendMessage(message->chat->id, "Sorry, we aren't support voice messages yet!");
+                        return;
+                    }
+
+                    // If message type is text
+                    else
+                    {
+                        cout << "Location input: " << endl;
+                        string weather_f = weather_sync(loc_locale, message->text.c_str(), path);
+                        bot.getApi().sendMessage(message->chat->id, weather_f);
+                        flag = false;
+                        return;
+                    }
                 }
             }
         });

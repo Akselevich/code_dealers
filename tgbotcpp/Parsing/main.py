@@ -1,5 +1,13 @@
 import requests
-with open('C:/Users/Sokoban/code_dealers/tgbotcpp/loc.txt') as f:
+import argparse
+parser = argparse.ArgumentParser(description='loc file location')
+parser.add_argument('dir', type=str, help='loc file location')
+loc = str(parser.parse_args())
+loc = loc.replace("Namespace(dir=", "")
+loc = loc.replace("\'","")
+loc = loc.replace(")", "")
+
+with open(loc) as f:
     s_city = f.read()
     if s_city[0] == "!":
         s_city = s_city.replace("!", "")
@@ -34,7 +42,7 @@ try:
 
 except Exception as e:
     print("Exception (find):", e)
-    with open('C:/Users/Sokoban/code_dealers/tgbotcpp/loc.txt', 'w', encoding='utf-8') as f:
+    with open(loc, 'w', encoding='utf-8') as f:
         print("The region was not found!\n")
         f.write("The region was not found!\n")
     exit(1)
@@ -48,10 +56,8 @@ try:
     output = "Now in this place " + str(data['weather'][0]['description']) + ".\nTemperature: " + \
              str(round(data['main']['temp'])) + " °C\n"
 
-    with open('C:/Users/Sokoban/code_dealers/tgbotcpp/loc.txt', 'w', encoding='utf-8') as f:
+    with open(loc, 'w', encoding='utf-8') as f:
         f.write(output)
-    # print("Now in this place: ", data['weather'][0]['description'], ".")
-    # print("Temperature:", data['main']['temp'], "°C")
 
 
 except Exception as e:
