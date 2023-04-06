@@ -45,10 +45,12 @@ namespace config
         std::string token = root.get<std::string>("token");
         std::string help = root.get<std::string>("help");
         std::string loc = root.get<std::string>("temp");
+        std::string key = root.get<std::string>("key");
         pt::ptree root2;
         root2.put("token", token);
         root2.put("help", help);
         root2.put("temp", locale);
+        root2.put("key", key);
         pt::write_json(filename, root2);
         
     }
