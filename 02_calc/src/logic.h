@@ -3,6 +3,8 @@
 
 #include <string> // for char_traits, operator+, string, basic_string
 #include <cmath>
+#include "tinyexpr.h"
+
 
 namespace calc
 {

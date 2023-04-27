@@ -1,4 +1,4 @@
-#include "logic.h"
+﻿#include "logic.h"
 #include <sstream>
 
 namespace calc
@@ -10,14 +10,20 @@ namespace calc
             return "";
         }
 
-        std::istringstream input_ss(expression);
-        std::stringstream output_ss;
+        std::string input_ss;
+        input_ss.append(expression);
+        std::string output_ss;
 
-        int a;
-        int b;
-        char op;
-        input_ss >> a >> op >> b;
-        switch (op)
+        //int a;
+        //int b;
+        //char op;
+        double a = te_interp(input_ss.c_str(), 0);
+        //double output = te_interp("5+5", 0);
+        output_ss = std::to_string(a); //костыли, чтобы убрать нули из целого числа
+        output_ss.erase(output_ss.find_last_not_of('0') + 1, std::string::npos);
+        if (output_ss.back() == '.')
+            output_ss.replace(output_ss.find('.'), output_ss.find('.') + 1, "");
+        /*switch (op)
         {
         case '+':
             output_ss << a << op << b << "=" << a + b;
@@ -41,7 +47,8 @@ namespace calc
             output_ss << "Invalid expression!";
             break;
         }
+        */
 
-        return output_ss.str();
+        return output_ss;
     }
 }

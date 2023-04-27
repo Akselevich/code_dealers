@@ -26,7 +26,10 @@ namespace calc
         }
         else
         {
-            std::string result = logic_ref.process_math();
+            std::string result = "Your expression: ";
+            result.append(logic_ref.expression);
+            result.append("  |  Result: ");
+            result.append(logic_ref.process_math());
             return hbox(text(result));
         }
     }

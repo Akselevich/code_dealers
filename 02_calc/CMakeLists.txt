@@ -19,6 +19,6 @@ if(NOT ftxui_POPULATED)
 endif()
 # ------------------------------------------------------------------------------
 
-add_executable(calc main.cpp src/ui.cpp src/logic.cpp "src/tinyexpr.h")
+add_executable(calc main.cpp src/ui.cpp src/logic.cpp src/tinyexpr.c)
 target_include_directories(calc PRIVATE src)
 target_link_libraries(calc ftxui::dom ftxui::screen ftxui::component)
