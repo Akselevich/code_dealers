@@ -50,7 +50,7 @@ string weather_sync_gps(string temp, string key, float latitude, float longitude
     ss.append(path).append("Parsing\\main.py ").append(temp.c_str());
     ss.append(" ").append(key);
     
-    // Launching Python parser 
+    // Launching Python parser
     system(ss.c_str());
     
     // Reading output from a file temp.txt

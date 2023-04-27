@@ -1,6 +1,6 @@
 {
-  "token": "5851994307:AAG3kJSDiqbXWdOX1XzD63D17n3l2Aziyos",
-  "help": "Here is a list of availible commands:\n\/help - shows this list\n\/weather - real-time weather display",
-  "temp": "C:\\Users\\andre\\code_dealers\\tgbotcpp\\temp.txt",
-  "key": "1d846a80425c1dd58e8efcc238341ff5"
+    "token": "5851994307:AAG3kJSDiqbXWdOX1XzD63D17n3l2Aziyos",
+    "help": "Here is a list of availible commands:\n\/help - shows this list\n\/weather - real-time weather display",
+    "temp": "C:\\Users\\Sokoban\\code_dealers\\tgbotcpp\\temp.txt",
+    "key": "1d846a80425c1dd58e8efcc238341ff5"
 }
