@@ -11,4 +11,4 @@
     Writing code for fun and profit, it’s their game  
     They’re the code dealers, and they’ll never be the same  
     ©ChatGPT
-![App Screenshot](https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif)
+    ![App Screenshot](https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif)
