@@ -2,7 +2,7 @@
 - Project 1 - [Github analog](https://github.com)
 - Project 2 - [Graphical calculator](https://github.com/Akselevich/code_dealers/tree/main/code_dealers/02_calc)
 - Project 3 - [Telegram bot](https://github.com/Akselevich/code_dealers/tree/main/code_dealers/03_tgbot)
-- Project 4 - [Neural network](https://pytorch.org/get-started/locally/)
+- Project 4 - [Neural network](https://github.com/Akselevich/code_dealers/tree/main/code_dealers/04_neural_network)
 
 
 ## 🚀 About Us
